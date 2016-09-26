@@ -37,8 +37,8 @@
                 <span class="date-desc" v-for="weekDay in weekDays">{{weekDay}}</span>
             </div>
             <div class="month-days">
-                <span class="month-days-one" v-for="day in monthDays" @click="selectDate(day.month,day.day)" :class="day.color">
-                    <span :class="day.selected">{{day.day}}</span>
+                <span class="month-days-one" v-for="day in monthDays" @click="selectDate(day.month,day.day)">
+                    <span :class="[day.color,day.selected]">{{day.day}}</span>
                 </span>
             </div>
         </div>
