@@ -26,7 +26,21 @@
 <body>
 
 <div id="example">
-    <datepicker readonly="false" format="YYYY/MM/DD" value="2016/12/05" min="2016/12/01" max="2016/12/20" week-type="0"></datepicker>
+    <p>默认控件：</p>
+    <datepicker></datepicker>
+
+    <p>带时间格式控件：YYYY-MM-DD</p>
+    <datepicker  format="YYYY-MM-DD" value="2016-12-05" week-type="1"></datepicker>
+
+    <p>设置周日显示在最后：YYYY-MM-DD</p>
+    <datepicker  format="YYYY/MM/DD" value="2016/12/05" week-type="1"></datepicker>
+
+
+    <p>设置最大和最小日期：</p>
+    <datepicker  format="YYYY/MM/DD" value="2016/12/05" min="2016/12/01" max="2016/12/20"></datepicker>
+
+    <p>显示时间选择：</p>
+    <datepicker show-time="0" format="YYYY/MM/DD" value="2016/12/05" min="2016/12/01" max="2016/12/20" week-type="0"></datepicker>
 </div>
 
 <script src="vue.min.js"></script>
