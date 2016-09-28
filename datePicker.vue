@@ -1,5 +1,5 @@
 <style>
-    .data-picker-box{width:210px;height:242px;background:#fff;border:1px solid #eee}
+    .data-picker-box{width:210px;height:240px;background:#fff;border:1px solid #eee;overflow:hidden}
     .data-picker-box .date-picker-head,
     .data-picker-box .week-days{height:30px;line-height:30px;border-bottom:1px solid #eee}
     .data-picker-box .prev-year,
@@ -15,17 +15,31 @@
     .data-picker-box .month-days-one{display:inline-block;width:100px;text-align:center}
     .data-picker-box .date-desc,
     .data-picker-box .month-days-one{width:30px}
-    .data-picker-box .month-days-one span{display:inline-block;height:30px;width:30px;line-height:30px}
-    .data-picker-box .month-days-one .selected{background:#abc}
+    .data-picker-box .month-days-one:hover{background:#eee}
+    .data-picker-box .month-days-one span{display:inline-block;height:30px;width:30px;line-height:30px;cursor:pointer}
     .data-picker-box .grey{color:#666;background:#f5f5f5}
+    .data-picker-box .grey:hover{background:#ddd}
+    .data-picker-box .selected{background:#abc}
+    .data-picker-box .data-time-box{float:right;width:79px;height:240px;overflow:hidden;border-left:1px solid #eee;background:#fff}
+    .data-picker-box .data-time-box p{height:25px;line-height:25px;margin:0;text-align:center}
+    .data-picker-box .data-time-box p:hover{background:#eee;cursor:pointer}
+    .data-picker-box .data-time-box .time-tip{height:30px;line-height:30px;border-bottom:1px solid #eee}
+    .data-picker-box .data-time-box .times-wrap{height:210px;overflow:auto}
+    .data-picker-box.show-times{width:290px}
 </style>
 <template>
     <div class="data-picker-wrap">
         <input type="text"
                 :readonly="readonly"
-                :value="value"
+                :value="value+(showTime?' '+time:'')"
                 @click="show = !show">
-        <div class="data-picker-box" v-show="show">
+        <div class="data-picker-box" :class="{'show-times':showTime}" v-show="show">
+            <div class="data-time-box" v-show="show && showTime">
+                <p class="time-tip">选择时间</p>
+                <div class="times-wrap">
+                <p v-for="time in times" :class="time.selected" @click="selectTime(time.time)">{{time.time}}</p>
+                </div>
+            </div>
             <div class="date-picker-head">
                 <span class="prev-year" @click="changeYear((+curYear)-1)"></span>
                 <span class="prev-month" @click="changeMonth((+curMonth)-1)"></span>
@@ -41,12 +55,14 @@
                     <span :class="[day.color,day.selected]">{{day.day}}</span>
                 </span>
             </div>
+
         </div>
     </div>
 </template>
 
 <script>
-Vue.component('datepicker', {
+    Vue.component('datepicker', {
+        template:'#asss',
         props: {
             readonly: Boolean,
             format: {
@@ -54,8 +70,8 @@ Vue.component('datepicker', {
                 default: 'YYYY/MM/DD'
             },
             value: {
-                type: String,
-                default: '2016/12/12'
+                type: Date,
+                default: new Date().getFullYear()+'/'+(new Date().getMonth()+1)+'/'+new Date().getDate()
             },
             min:String,
             max:String,
@@ -70,17 +86,41 @@ Vue.component('datepicker', {
             show:{
                 type:Boolean,
                 default:false
+            },
+            showTime:{
+                type:Boolean,
+                default:false
+            },
+            time:{
+                type: String,
+                default: '00:00'
             }
         },
         computed:{
+            times:function(){
+                var times=[],tmp;
+                for(var i=0;i<24;i++){
+                    tmp=i>9?i+':00':'0'+i+':00';
+                    times.push({
+                        time:tmp,
+                        selected:this.time==tmp?'selected':''
+                    });
+                    tmp=i>9?i+':30':'0'+i+':30';
+                    times.push({
+                        time:tmp,
+                        selected:this.time==tmp?'selected':''
+                    });
+                }
+                return times;
+            },
             curYear:function(){
-                return this.value.split('/')[0]
+                return this.value.split(this.format.substr(4,1))[0]
             },
             curMonth:function(){
-                return this.value.split('/')[1]
+                return this.value.split(this.format.substr(4,1))[1]
             },
             curDay:function(){
-                return this.value.split('/')[2]
+                return this.value.split(this.format.substr(4,1))[2]
             },
             weekDays:function(){
                 var d=['一','二','三','四','五','六'];
@@ -171,7 +211,12 @@ Vue.component('datepicker', {
             },
             changeMonth:function(m){
                 this.value=this.dateFormat(this.curYear,m-1,this.curDay);
+            },
+            selectTime:function(time){
+                this.time=time;
+                this.show=false;
             }
         }
     });
-    </script>
+
+</script>
