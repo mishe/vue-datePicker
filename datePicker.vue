@@ -18,8 +18,11 @@
     .data-picker-box .month-days-one:hover{background:#eee}
     .data-picker-box .month-days-one span{display:inline-block;height:30px;width:30px;line-height:30px;cursor:pointer}
     .data-picker-box .grey{color:#666;background:#f5f5f5}
-    .data-picker-box .grey:hover{background:#ddd}
+    .data-picker-box .can-not-select{color:#666;background:#f5f5f5}
+    .data-picker-box .grey:hover,
+    .data-picker-box .can-not-select:hover{background:#ddd}
     .data-picker-box .selected{background:#abc}
+    .data-picker-box .month-days-one .can-not-select{cursor:text}
     .data-picker-box .data-time-box{float:right;width:79px;height:240px;overflow:hidden;border-left:1px solid #eee;background:#fff}
     .data-picker-box .times-wrap p{height:25px;line-height:25px;margin:0;text-align:center}
     .data-picker-box .times-wrap p:hover{background:#eee;cursor:pointer}
@@ -51,8 +54,8 @@
                 <span class="date-desc" v-for="weekDay in weekDays">{{weekDay}}</span>
             </div>
             <div class="month-days">
-                <span class="month-days-one" v-for="day in monthDays" @click="selectDate(day.month,day.day)">
-                    <span :class="[day.color,day.selected]">{{day.day}}</span>
+                <span class="month-days-one" v-for="day in monthDays" @click="selectDate(day.month,day.day,day.canSelect)">
+                    <span :class="[day.color,day.selected,{'can-not-select':day.canSelect}]">{{day.day}}</span>
                 </span>
             </div>
 
@@ -128,7 +131,8 @@
                 return d;
             },
             monthDays:function(){
-                var date,i=0,count,week,days=[];
+                var date,i=0,count,week,days=[],temp,
+                        min=new Date(this.min).getTime(),max=new Date(this.max).getTime();
 
                 //补齐上个月末
                 date=new Date(this.curYear,this.curMonth-1,1);
@@ -136,35 +140,47 @@
                 week=6-(6-date.getDay())-this.weekType;
                 week=week==0?7:week;
 //                console.log(date,week)
+
+                temp=new Date(this.curYear,this.curMonth,count).getTime();
+//                console.log(new Date(this.curYear,this.curMonth-1,count))
                 for(;i<week;i++){
                     days.unshift({
                         month:this.curMonth-1,
                         day:count-i,
+                        canSelect:(min>temp || max<temp),
                         selected:'',
                         color:'grey'
                     });
+                    temp-=86400000;
                 }
 
-                date=new Date(this.curYear,this.curMonth,0)
+                date=new Date(this.curYear,this.curMonth,0);
+
                 count=date.getDate();
+                temp=new Date(this.curYear,this.curMonth-1,1).getTime();
                 for(i=1;i<count+1;i++){
                     days.push({
                         month:this.curMonth,
                         day:i>9?i:'0'+i,
+                        canSelect:(min>temp || max<temp),
                         selected:this.curDay==i?'selected':'',
                     });
+                    temp+=86400000;
                 }
 
                 //补下个月
                 week=6-date.getDay()+(+this.weekType);
-                days.length+week<this.rows*7 && (week=week+7)
+                days.length+week<this.rows*7 && (week=week+7);
+                temp=new Date(this.curYear,this.curMonth,1).getTime();
                 for(i=1;i<week+1;i++){
                     days.push({
                         month:(+this.curMonth)+1,
                         day:i>9?i:'0'+i,
                         selected:'',
+                        canSelect:(min>temp || max<temp),
                         color:'grey'
                     });
+                    temp+=86400000;
                 }
 
                 return days
@@ -193,7 +209,8 @@
                     };
                 return format(fmt);
             },
-            selectDate:function(m,d){
+            selectDate:function(m,d,canSelect){
+                if(canSelect) return false;
                 var min,max,cur=this.dateFormat(this.curYear,m-1,d);
                 if(this.min){
                     min=new Date(this.min);
@@ -213,6 +230,12 @@
                 this.value=this.dateFormat(this.curYear,m-1,this.curDay);
             },
             selectTime:function(time){
+                var min=new Date(this.min).getTime(),
+                    max=new Date(this.max).getTime(),
+                    cur=new Date(this.curYear,this.curMonth-1,this.curDay);
+                if(cur<min || cur>max){
+                    return false
+                }
                 this.time=time;
                 this.show=false;
             }
