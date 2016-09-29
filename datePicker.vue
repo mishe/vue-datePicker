@@ -21,9 +21,9 @@
     .data-picker-box .grey:hover{background:#ddd}
     .data-picker-box .selected{background:#abc}
     .data-picker-box .data-time-box{float:right;width:79px;height:240px;overflow:hidden;border-left:1px solid #eee;background:#fff}
-    .data-picker-box .data-time-box p{height:25px;line-height:25px;margin:0;text-align:center}
-    .data-picker-box .data-time-box p:hover{background:#eee;cursor:pointer}
-    .data-picker-box .data-time-box .time-tip{height:30px;line-height:30px;border-bottom:1px solid #eee}
+    .data-picker-box .times-wrap p{height:25px;line-height:25px;margin:0;text-align:center}
+    .data-picker-box .times-wrap p:hover{background:#eee;cursor:pointer}
+    .data-picker-box .data-time-box .time-tip{margin:0;height:30px;line-height:30px;border-bottom:1px solid #eee;text-align:center}
     .data-picker-box .data-time-box .times-wrap{height:210px;overflow:auto}
     .data-picker-box.show-times{width:290px}
 </style>
