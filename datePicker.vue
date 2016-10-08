@@ -1,5 +1,6 @@
 <style>
-    .data-picker-box{width:210px;height:240px;background:#fff;border:1px solid #eee;overflow:hidden}
+    .data-picker-wrap{position:relative}
+    .data-picker-box{position:absolute;top:25px;left:0;z-index:3;width:210px;height:240px;background:#fff;border:1px solid #eee;overflow:hidden}
     .data-picker-box .date-picker-head,
     .data-picker-box .week-days{height:30px;line-height:30px;border-bottom:1px solid #eee}
     .data-picker-box .prev-year,
